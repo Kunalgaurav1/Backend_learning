@@ -210,7 +210,7 @@ server.post("/login", async(req,res)=>{
 });
 
 
-
+ 
 // server.get("/", (req,res)=>{
 
 //     console.log(req.cookies.token);
@@ -219,6 +219,10 @@ server.post("/login", async(req,res)=>{
 
 // });
 
+
+server.get("/about", (req,res)=>{
+    res.send("this is about page");
+});
 
 
 
