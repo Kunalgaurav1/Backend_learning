@@ -105,7 +105,7 @@ import path from "path";
 import mongoose from "mongoose";
 import cookieParser from "cookie-parser";
 
-
+//instance of express
 const server = express();
 
 
@@ -137,7 +137,7 @@ mongoose.connect("mongodb://localhost:27017",{
 
 server.use(express.static(path.join(path.resolve(), "public"))); //this is a middleware so we can not use it directly so we'll use server.use
 server.use(express.urlencoded({extended:true}));
-// server.use(cookieParser());
+server.use(cookieParser());
 
 //console.log(path.join(path.resolve(), "public")); 
 
@@ -154,7 +154,17 @@ server.get("/", (req, res)=>{
     // res.render("index" , {name : "kunal"});
     // res.sendFile("index");
 
+    const {token} = req.cookies;
+
+    if(token){
+        res.render("logout");
+    }else{
+        res.render("login");
+
+    }
+
     res.render("login");
+    // res.render("index");
 });
 
 
@@ -205,24 +215,43 @@ server.get("/add", async(req,res)=>{
 
 server.post("/login", async(req,res)=>{
 
-    res.cookie("token","iamin");
-    res.redirect("/");
+    res.cookie("token","iamin", {
+        httpOnly:true,expires:new Date(Date.now()+ 60*1000), 
+    });
+   // res.redirect("/success");
+
+    res.redirect("/success");
 });
+
+server.get("/logout", async(req,res)=>{
+    res.cookie("token", "iamout",{
+        httpOnly:true, expire:new Date(Date.now()+ 60*1000),
+    });
+
+    res.redirect("/success");
+});
+
+
+server.get("/", (req,res) =>{
+    console.log(req.cookies);
+
+    res.render("login");
+});
+
+
 
 
  
 // server.get("/", (req,res)=>{
 
-//     console.log(req.cookies.token);
+//     console.log(req.cookies);
 
-//     res.render("login");
+//     res.render("success");
 
 // });
 
 
-server.get("/about", (req,res)=>{
-    res.send("this is about page");
-});
+
 
 
 
